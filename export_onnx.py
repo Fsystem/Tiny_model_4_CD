@@ -8,7 +8,7 @@ def parse_arguments():
         description="Export ChangeClassifier model to ONNX format."
     )
     parser.add_argument(
-        "--modelpath",
+        "--model-path",
         type=str,
         default=None,
         help="Path to the .pth checkpoint to load (optional).",
@@ -60,4 +60,4 @@ def export_onnx(modelpath, output, input_size):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    export_onnx(args.modelpath, args.output, args.input_size)
+    export_onnx(args.model_path, args.output, args.input_size)
