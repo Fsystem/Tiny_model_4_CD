@@ -36,6 +36,12 @@ clone this repository in "TinyCD":
 ```shell
 git clone https://github.com/AndreaCodegoni/Tiny_model_4_CD.git
 ```
+conda config --remove channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
 
 Then, you can create a virtual ``conda`` environment named ``TinyCD`` with the following cmd:
 
