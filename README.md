@@ -36,18 +36,30 @@ clone this repository in "TinyCD":
 ```shell
 git clone https://github.com/AndreaCodegoni/Tiny_model_4_CD.git
 ```
-conda config --remove channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
 
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
-conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-
-Then, you can create a virtual ``conda`` environment named ``TinyCD`` with the following cmd:
+Then, install dependencies using [uv](https://github.com/astral-sh/uv):
 
 ```shell
-conda create --name TinyCD --file requirements.txt
+uv venv TinyCD
+source TinyCD/bin/activate
+uv pip install -r requirements.txt
+```
+
+For GPU support, install the CUDA-enabled PyTorch build first (adjust the index URL to match your CUDA version — see https://pytorch.org/get-started/locally/):
+
+```shell
+uv venv TinyCD
+source TinyCD/bin/activate
+uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+uv pip install -r requirements.txt
+```
+
+Alternatively, using conda:
+
+```shell
+conda create --name TinyCD python=3.10
 conda activate TinyCD
+pip install -r requirements.txt
 ```
 
 ## Dataset 

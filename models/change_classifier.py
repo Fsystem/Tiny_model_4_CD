@@ -66,9 +66,12 @@ def _get_backbone(
     bkbn_name, pretrained, output_layer_bkbn, freeze_backbone
 ) -> ModuleList:
     # The whole model:
-    entire_model = getattr(torchvision.models, bkbn_name)(
-        pretrained=pretrained
-    ).features
+    if pretrained:
+        weights_enum = getattr(torchvision.models, f"{bkbn_name}_Weights", None)
+        weights = weights_enum.DEFAULT if weights_enum is not None else None
+        entire_model = getattr(torchvision.models, bkbn_name)(weights=weights).features
+    else:
+        entire_model = getattr(torchvision.models, bkbn_name)(weights=None).features
 
     # Slicing it:
     derived_model = ModuleList([])
