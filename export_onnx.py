@@ -25,10 +25,17 @@ def parse_arguments():
         default=256,
         help="Spatial size (height and width) of the input images (default: 256).",
     )
+    parser.add_argument(
+        "--single-file",
+        action="store_true",
+        help=(
+            "Export ONNX in a single .onnx file (disable external tensor data sidecar)."
+        ),
+    )
     return parser.parse_args()
 
 
-def export_onnx(modelpath, output, input_size):
+def export_onnx(modelpath, output, input_size, single_file=False):
     # Initialise model
     model = ChangeClassifier(pretrained=False)
     if modelpath is not None:
@@ -48,16 +55,22 @@ def export_onnx(modelpath, output, input_size):
         output,
         input_names=["reference", "test"],
         output_names=["change_mask"],
+        external_data=not single_file,
         dynamic_axes={
             "reference": {0: "batch_size"},
             "test": {0: "batch_size"},
             "change_mask": {0: "batch_size"},
         },
+        dynamo=False,  # 使用传统 TorchScript 方式
         opset_version=18,
     )
     print(f"ONNX model saved to {output}")
+    if single_file:
+        print("Export mode: single-file ONNX")
+    else:
+        print("Export mode: ONNX + external data sidecar")
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    export_onnx(args.model_path, args.output, args.input_size)
+    export_onnx(args.model_path, args.output, args.input_size, args.single_file)
