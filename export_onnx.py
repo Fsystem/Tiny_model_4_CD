@@ -3,6 +3,36 @@ import torch
 from models.change_classifier import ChangeClassifier
 
 
+def _load_state_dict_with_compat(model, modelpath):
+    state_dict = torch.load(modelpath, map_location="cpu")
+
+    try:
+        model.load_state_dict(state_dict)
+        return
+    except RuntimeError as load_error:
+        # Backward-compat for checkpoints where _mixing_mask[2] was wrapped in
+        # an extra "_mixing" module.
+        old_prefix = "_mixing_mask.2._mixing._convmix."
+        new_prefix = "_mixing_mask.2._convmix."
+
+        remapped_state_dict = {}
+        remapped_any_key = False
+        for key, value in state_dict.items():
+            if key.startswith(old_prefix):
+                remapped_state_dict[new_prefix + key[len(old_prefix) :]] = value
+                remapped_any_key = True
+            else:
+                remapped_state_dict[key] = value
+
+        if not remapped_any_key:
+            raise load_error
+
+        model.load_state_dict(remapped_state_dict)
+        print(
+            "Loaded checkpoint with legacy key remapping for _mixing_mask.2."  # noqa: E501
+        )
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(
         description="Export ChangeClassifier model to ONNX format."
@@ -39,7 +69,7 @@ def export_onnx(modelpath, output, input_size, single_file=False):
     # Initialise model
     model = ChangeClassifier(pretrained=False)
     if modelpath is not None:
-        model.load_state_dict(torch.load(modelpath, map_location="cpu"))
+        _load_state_dict_with_compat(model, modelpath)
         print(f"Loaded weights from {modelpath}")
 
     model.eval()
