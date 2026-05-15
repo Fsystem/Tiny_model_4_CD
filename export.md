@@ -12,3 +12,5 @@ python export_onnx.py --model-path pretrained_models/levir_best.pth --output pre
 
 # Single-file ONNX export (no .onnx.data sidecar)
 python export_onnx.py --model-path pretrained_models/levir_best.pth --output pretrained_models/onnx/levir_best_change_classifier_single.onnx --single-file
+
+python export_onnx.py --model-path pretrained_models/whu_best.pth --output pretrained_models/onnx/whu_best_change_classifier_single.onnx --single-file
